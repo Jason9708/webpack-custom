@@ -1,0 +1,16 @@
+{
+    "name": "webpack-custom",
+    "version": "1.0.0",
+    "description": "develop webpack environment",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack --mode production"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10"
+    }
+}
