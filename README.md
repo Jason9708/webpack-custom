@@ -171,3 +171,136 @@ module.exports = {
 ```
 <script src="./dist/output.js"></script>
 ```
+如果我们的文件名或者路径会变化，例如使用`[hash]`来进行命名，那么最好是将HTML引用路径和我们的构建结果关联起来，就会使用`html-webpack-plugin`
+
+`html-webpack-plugin`是独立的依赖包，所以在使用之前要安装它。
+```
+npm install html-webpack-plugin -D
+```
+```
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+    // ...
+    plugins: [
+        new HtmlWebpackPlugin
+    ]
+}
+```
+> 这里配置之后，构造时`html-webpack-plugin`会为我们创建`.html`文件，其中会引用构建出来的`html-webpack-plugin`，传递一个写好的`.html`模板
+```
+module.exports = {
+  // ...
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'index.html', // 配置输出文件名和路径
+      template: path.join(__dirname,'./src/index.html'),   //指定模板页面
+    }),
+  ],
+}
+```
+`html-webpack-plugin`插件生成的内存中的页面会帮我们创建并正确引用了打包编译生成的`index.js`的`<script></script>`
+
+#### Css
+当我们希望使用`webpack`对我们所编写的`css`进行构建，则需要在配置中引入相关`loader`来解析和处理`.css`文件（需要用到`style-loader,css-loader`,两者都是依赖包，需要先进行安装）
+```
+module.exports = {
+    rules: [
+        {
+            test: /\.css/,
+            include: [
+                path.resolve(__dirname,'src')
+            ],
+            use:[
+                'style-loader',
+                'css-loader'
+            ]
+        }
+    ]
+}
+```
+**`css-loader,style-loader`的作用**
+- css-loader：负责解析css代码，处理css中的依赖，例如`@import`以及`url()`等引用外部文件的声明
+- style-loader：将`css-loader`解析出来的结果转变为`js`代码，运行时会插入到`<style></style>`中来让`css`代码运作
+
+经过`css-loader,style-loader`的处理，`css`代码就会转变为`js`代码，最后一起打包出来。
+
+如果需要将`.css`文件单独分离，需要用到`extract-text-webpack-plugin`插件（这里不对其进行解释）
+```
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        // 因为这个插件需要干涉模块转换的内容，所以需要使用它对应的 loader
+        use: ExtractTextPlugin.extract({ 
+          fallback: 'style-loader',
+          use: 'css-loader',
+        }), 
+      },
+    ],
+  },
+  plugins: [
+    // 引入插件，配置文件名，这里同样可以使用 [hash]
+    new ExtractTextPlugin('index.css'),
+  ],
+}
+```
+
+
+
+
+#### Css预处理器（Less/Sass）
+`Less/Sass`可以说是在工作中必不可少的，`webpack`可以通过配置`loader`，来支持`Less/Sass`的运行
+
+```
+举个爪子，以Less为例子进行配置
+
+需要用到less-loader
+
+将 css-loader、 style-loader 和 less-loader 链式调用， 可以把所有样式立即应用于 DOM
+
+module.exports = {
+    // ...
+    module: {
+        rules: [
+            {
+                test: /\.less$/,
+                use: [{
+                    loader: 'style-loader'
+                }, {
+                    loader: 'css-loader'
+                }, {
+                    loader: 'less-loader' 
+                }]
+            }
+        ]
+    }
+}
+```
+```
+我们也可以修改上面的webpack配置
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        // 因为这个插件需要干涉模块转换的内容，所以需要使用它对应的 loader
+        use: ExtractTextPlugin.extract({ 
+          fallback: 'style-loader',
+          use: [
+            'css-loader', 
+            'less-loader',
+          ],
+        }), 
+      },
+    ],
+  },
+  // ...
+}
+```
