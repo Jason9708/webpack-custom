@@ -251,8 +251,6 @@ module.exports = {
 ```
 
 
-
-
 #### Css预处理器（Less/Sass）
 `Less/Sass`可以说是在工作中必不可少的，`webpack`可以通过配置`loader`，来支持`Less/Sass`的运行
 
@@ -304,3 +302,69 @@ module.exports = {
   // ...
 }
 ```
+
+#### 处理图片文件
+在前端工作流程中，绝对少不了图片，虽然我们已经在`css-loader`样式解析中对`url()`引用文件路径做了处理，但`webpack`处理不了`jpg/png/gif`等文件格式，所以我们还需要添加一个`loader`来配置，让我们能够使用图片文件
+
+`file-loader`可以用于处理很多类型的文件，它主要是通过输出文件，把构建后的文件路径返回。
+
+配置`file-loader`，在`rules`中添加图片类型文件的解析配置
+```
+module.exports = {
+    // ...
+    modules: {
+        // ...
+        rules: [
+            {
+               test: /\.(png|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {},
+                    },
+                ], 
+            }
+        ]
+    }
+}
+```
+
+#### Babel 处理ES6、ES7标准
+`Babel`是一个让我们能够使用`ES`新特性的**JS编译工具**，我们可以在`webpack`中配置`Babel`，让我们用`ES6`,`ES7`标准编写`JS`代码
+```
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.jsx?/, // 支持 js 和 jsx
+        include: [
+          path.resolve(__dirname, 'src'), // src 目录下的才需要经过 babel-loader 处理
+        ],
+        loader: 'babel-loader',
+      },
+    ],
+  },
+}
+```
+
+**我们需要在根目录下创建一个.babelrc文件来对Babel进行配置**
+
+
+
+#### 启动静态服务
+开启静态服务，可以通过`webpack-dev-server`在本地开启一个简单的静态服务来进行开发
+
+安装`webpack-dev-server`，然后配置`package.json`中
+```
+"scripts": {
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development"
+}
+```
+使用`npm run start`运行项目，访问`http://localhost:8080/`（默认访问的是index.html)
+
+通过`ctrl + C `可以结束运行
+
+****
+
