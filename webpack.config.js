@@ -15,7 +15,7 @@ module.exports = {
         rules: [
             // 处理ES6
             {
-                test: /\.jsx/,
+                test: /\.jsx?/,
                 include: [
                     path.resolve(__dirname, 'src')
                 ],
