@@ -55,6 +55,9 @@ module.exports = {
 
     // 代码模块路径解析的配置
     resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src') // 为src设置别名
+        },
         modules: [
             "node_modules",
             path.resolve(__dirname, 'src')
