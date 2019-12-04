@@ -1,3 +1,3 @@
-console.log('I am Webpack')
+console.log('I am WebPack')
 
 import './index.css'

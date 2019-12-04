@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 const UglifyPlugin = require('uglifyjs-webpack-plugin') // 用于缩小（压缩）JsW文件
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -78,6 +79,11 @@ module.exports = {
         }),
         // 将.css文件单独分离
         new ExtractTextPlugin('index.css'), // 分离 css
+        new webpack.NamedModulesPlugin(), // 用于启动 HMR 时可以显示模块的相对路径
+        new webpack.HotModuleReplacementPlugin() // 热更新 HMR
+    ],
 
-    ]
+    devServer: {
+        hot: true, // 开启HMR
+    }
 }
